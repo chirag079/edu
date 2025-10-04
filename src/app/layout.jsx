@@ -8,7 +8,7 @@ import Footer from "../components/footer";
 // import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { Toaster } from "sonner";
 import { Providers } from "../components/providers";
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 // import { fontSans } from "../lib/fonts";
 
 const inter = Inter({ subsets: ["latin"] });

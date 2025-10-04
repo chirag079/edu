@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
+import { useSession, signOut, signIn } from "next-auth/react";
 import { LogOut, Menu, X } from "lucide-react";
 
 export default function MobileHamburger({ navItems = [], isAdmin = false }) {
