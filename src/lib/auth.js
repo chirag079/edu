@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { connectToDb } from "@/lib/db";
-import { User } from "@/lib/models/user.schema";
+import { connectToDb } from "./db";
+import { User } from "./models/user.schema";
 
 export async function verifyPassword(password, hashedPassword) {
   return await bcrypt.compare(password, hashedPassword);

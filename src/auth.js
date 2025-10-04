@@ -1,8 +1,9 @@
+import "reflect-metadata"; 
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { connectToDb } from "@/lib/db";
-import { User } from "@/lib/models/user.schema";
-import { verifyPassword } from "@/lib/auth";
+import { connectToDb } from "./lib/db";
+import { User } from "./lib/models/user.schema";
+import { verifyPassword } from "./lib/auth";
 
 if (!process.env.NEXTAUTH_SECRET) {
   throw new Error("Please provide process.env.NEXTAUTH_SECRET");

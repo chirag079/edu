@@ -1,10 +1,10 @@
 // src/app/page.jsx
 
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Home, Calendar, UtensilsCrossed, GraduationCap, ArrowRight, BookMarked, Search, Users, CheckCircle } from "lucide-react";
-import { auth } from "@/auth";
+import { auth } from "../auth";
 import { redirect } from "next/navigation";
 
 // --- Feature Card Component ---
