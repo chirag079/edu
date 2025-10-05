@@ -1,36 +1,37 @@
-import { Button } from "../components/ui/button";
+// src/app/page.jsx (Landing Page)
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth"; // your lib auth.js
+import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
 import {
-  Home, // For flats/housing
-  Calendar, // For events
-  UtensilsCrossed, // For restaurants/food
-  ShoppingBag, // General marketplace icon
-  GraduationCap, // Represents student focus
+  Home,
+  Calendar,
+  UtensilsCrossed,
+  ShoppingBag,
+  GraduationCap,
   ArrowRight,
-  BookMarked, // Alternate for books/stationary
-  Search, // Icon for Find step
-  Users, // Icon for Connect step
-  CheckCircle, // Icon for Engage/Transact step
+  BookMarked,
+  Search,
+  Users,
+  CheckCircle,
 } from "lucide-react";
-import { Suspense } from "react";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import {
   getApprovedListings,
   getApprovedEvents,
   getApprovedRestaurants,
-} from "@/actions/listing.actions";
+} from "../actions/listing.actions";
 import ItemCard from "../components/ItemCard";
-import SSRLoader from "@/components/SSRLoader";
+import SSRLoader from "../components/SSRLoader";
 
-// --- Data Display Component ---
+// ================== DATA DISPLAY COMPONENT ==================
 async function ApprovedItemsDisplay() {
   const [latestListings, upcomingEvents, featuredRestaurants] =
     await Promise.all([
@@ -39,7 +40,6 @@ async function ApprovedItemsDisplay() {
       getApprovedRestaurants(4),
     ]);
 
-  // Use standard Card for sections
   const SectionCard = ({ title, children }) => (
     <Card className="bg-card border-border shadow-sm">
       <CardHeader>
@@ -104,9 +104,8 @@ async function ApprovedItemsDisplay() {
   );
 }
 
-// --- Feature Card Component ---
+// ================== REUSABLE COMPONENTS ==================
 const FeatureCard = ({ icon: Icon, title, description }) => (
-  // Use standard card bg and border
   <Card className="bg-card border-border hover:border-primary transition-colors duration-200 shadow-sm">
     <CardHeader className="flex flex-row items-center gap-4 pb-2">
       <div className="bg-primary/10 p-2 rounded-lg">
@@ -122,7 +121,6 @@ const FeatureCard = ({ icon: Icon, title, description }) => (
   </Card>
 );
 
-// --- How It Works Step Component ---
 const HowItWorksStep = ({ icon: Icon, title, description }) => (
   <div className="flex flex-col items-center text-center gap-2">
     <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
@@ -133,119 +131,114 @@ const HowItWorksStep = ({ icon: Icon, title, description }) => (
   </div>
 );
 
-// --- Main Landing Page Component ---
+// ================== MAIN PAGE ==================
 export default async function LandingPage() {
-  const session = await auth();
+  // ✅ Use getServerSession instead of auth()
+  const session = await getServerSession(authOptions);
 
-  if (session?.user?.role !== "admin") {
-    if (session) {
-      return redirect("/dashboard");
-    }
+  if (session?.user?.role !== "admin" && session) {
+    redirect("/dashboard");
   }
 
   return (
     <main className="flex min-h-screen flex-col bg-background text-foreground">
-      {/* Hero Section - Simpler background, adaptable text/buttons */}
+      {/* Hero Section */}
       <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-b from-background to-muted/50 border-b border-border">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center text-center space-y-6">
-            <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary mb-4">
-              <GraduationCap className="inline-block w-4 h-4 mr-1" />
-              For Students, By Students
-            </div>
-            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none text-foreground">
-              Your Campus Connection Hub
-            </h1>
-            <p className="max-w-[700px] text-lg text-muted-foreground md:text-xl">
-              Find student housing, buy/sell stationary, discover local events,
-              and grab deals at nearby restaurants – all in one place.
-            </p>
-            <div className="flex flex-col gap-3 min-[400px]:flex-row justify-center pt-4">
-              {!session && (
-                <>
-                  {/* Use standard button variants */}
-                  <Button size="lg" asChild>
-                    <Link href="/signup">
-                      Get Started <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                  </Button>
-                  <Button variant="secondary" size="lg" asChild>
-                    <Link href="/login">Log In</Link>
-                  </Button>
-                </>
-              )}
-              {session?.user?.role === "admin" && (
+        <div className="container px-4 md:px-6 text-center space-y-6">
+          <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary mb-4">
+            <GraduationCap className="inline-block w-4 h-4 mr-1" />
+            For Students, By Students
+          </div>
+          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-foreground">
+            Your Campus Connection Hub
+          </h1>
+          <p className="max-w-[700px] mx-auto text-lg text-muted-foreground md:text-xl">
+            Find student housing, buy/sell stationery, discover events, and grab
+            deals at nearby restaurants — all in one place.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+            {!session && (
+              <>
                 <Button size="lg" asChild>
-                  <Link href="/admin">Admin Dashboard</Link>
+                  <Link href="/signup">
+                    Get Started <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
                 </Button>
-              )}
-            </div>
+                <Button variant="secondary" size="lg" asChild>
+                  <Link href="/login">Log In</Link>
+                </Button>
+              </>
+            )}
+            {session?.user?.role === "admin" && (
+              <Button size="lg" asChild>
+                <Link href="/admin">Admin Dashboard</Link>
+              </Button>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Features Section - Use muted background */}
+      {/* Features */}
       <section className="w-full py-16 md:py-24 lg:py-28 bg-muted/50 border-b border-border">
-        <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold tracking-tighter text-center mb-12 text-foreground">
+        <div className="container px-4 md:px-6 text-center">
+          <h2 className="text-3xl font-bold tracking-tighter mb-12 text-foreground">
             What We Offer
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* FeatureCards remain largely the same, relying on theme variables */}
             <FeatureCard
               icon={Home}
               title="Student Housing"
-              description="Find flats, PGs, and shared accommodations near campus."
+              description="Find PGs, flats, and shared accommodations near your campus."
             />
             <FeatureCard
               icon={BookMarked}
-              title="Stationary & More"
-              description="Buy and sell textbooks, notes, lab coats, and other essentials."
+              title="Stationery & More"
+              description="Buy and sell books, notes, and study materials easily."
             />
             <FeatureCard
               icon={Calendar}
               title="Campus Events"
-              description="Discover workshops, club activities, fests, and local happenings."
+              description="Discover upcoming workshops, fests, and club activities."
             />
             <FeatureCard
               icon={UtensilsCrossed}
               title="Local Deals"
-              description="Explore nearby restaurants and cafes offering student discounts."
+              description="Explore restaurants and cafes offering student discounts."
             />
           </div>
         </div>
       </section>
 
-      {/* How It Works Section - NEW */}
+      {/* How It Works */}
       <section className="w-full py-16 md:py-24 lg:py-28 bg-background border-b border-border">
-        <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold tracking-tighter text-center mb-12 text-foreground">
+        <div className="container px-4 md:px-6 text-center">
+          <h2 className="text-3xl font-bold tracking-tighter mb-12 text-foreground">
             How It Works
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             <HowItWorksStep
               icon={Search}
               title="1. Find What You Need"
-              description="Browse listings for housing, essentials, events, or local restaurants using our easy search and filters."
+              description="Search listings for housing, essentials, events, or food."
             />
             <HowItWorksStep
               icon={Users}
               title="2. Connect Easily"
-              description="Contact sellers or event organizers directly through the platform to ask questions or express interest."
+              description="Contact sellers or organizers directly through the platform."
             />
             <HowItWorksStep
               icon={CheckCircle}
               title="3. Engage & Transact"
-              description="Attend events, meet sellers, or visit restaurants. Securely manage your campus life essentials."
+              description="Meet sellers, attend events, and enjoy the best deals."
             />
           </div>
         </div>
       </section>
 
-      {/* Approved Items Section - Use background */}
+      {/* Latest Arrivals */}
       <section className="w-full py-16 md:py-24 lg:py-28 bg-muted/50">
-        <div className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold tracking-tighter text-center mb-12 text-foreground">
+        <div className="container px-4 md:px-6 text-center">
+          <h2 className="text-3xl font-bold tracking-tighter mb-12 text-foreground">
             Latest Arrivals
           </h2>
           <Suspense
@@ -255,21 +248,19 @@ export default async function LandingPage() {
               </div>
             }
           >
-            {/* ApprovedItemsDisplay uses standard Card now */}
             <ApprovedItemsDisplay />
           </Suspense>
         </div>
       </section>
 
-      {/* Call to Action Section - NEW */}
-      <section className="w-full py-16 md:py-24 lg:py-28 bg-background border-t border-border">
-        <div className="container px-4 md:px-6 text-center">
-          <h2 className="text-3xl font-bold tracking-tighter text-foreground mb-4">
+      {/* CTA */}
+      <section className="w-full py-16 md:py-24 lg:py-28 bg-background border-t border-border text-center">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold mb-4 text-foreground">
             Ready to Join Your Campus Community?
           </h2>
           <p className="max-w-[600px] mx-auto text-muted-foreground md:text-lg mb-8">
-            Sign up today to start exploring listings, events, and connect with
-            fellow students.
+            Sign up now to explore listings, events, and connect with students.
           </p>
           {!session && (
             <div className="flex justify-center gap-4">
@@ -281,20 +272,20 @@ export default async function LandingPage() {
               </Button>
             </div>
           )}
+          {session?.user?.role === "admin" && (
+            <Button size="lg" asChild>
+              <Link href="/admin">Go to Admin Dashboard</Link>
+            </Button>
+          )}
           {session && session.user.role !== "admin" && (
             <Button size="lg" asChild>
               <Link href="/dashboard">Go to Your Dashboard</Link>
             </Button>
           )}
-          {session && session.user.role === "admin" && (
-            <Button size="lg" asChild>
-              <Link href="/admin">Go to Admin Dashboard</Link>
-            </Button>
-          )}
         </div>
       </section>
 
-      {/* Footer - Use standard border and text color */}
+      {/* Footer */}
       <footer className="py-6 text-center text-xs text-muted-foreground border-t border-border">
         © {new Date().getFullYear()} EduStation. All rights reserved.
       </footer>

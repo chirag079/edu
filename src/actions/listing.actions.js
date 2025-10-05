@@ -650,7 +650,7 @@ export async function getApprovedEvents(limit = 8, college = null) {
 export async function getApprovedRestaurants(limit = 8, college = null) {
   try {
     await connectToDb();
-    const { Restaurant } = await import("@/lib/models/restaurant.schema.js");
+    const { Restaurant } = await import("../lib/models/restaurant.schema.js");
     const query = { status: "approved" };
     if (college) {
       query.college = college;
