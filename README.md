@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Local Setup Documentation
 
-## Getting Started
+● Step-by-step setup instructions
 
-First, run the development server:
+Clone the repository
 
-```bash
+git clone https://github.com/chirag079/edu.git
+cd edu
+
+
+Install dependencies
+
+npm install
+
+
+Run the development server
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Open the app in your browser
+Visit http://localhost:3000
+ to see your project in action.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+● Command examples with sample output
 
-## Learn More
+npm run dev
+# Output:
+# > next dev
+# 
+# ready - started server on 0.0.0.0:3000, url: http://localhost:3000
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+● Environment configuration guide
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Create a .env.local file in the project root with the following variables:
 
-## Deploy on Vercel
+# NextAuth settings
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="fhue3243h2urhew"
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# MongoDB
+MONGODB_URI="mongodb+srv://jainarihantaj007:wNgY5Acr5TB58ndq@cluster69.qeyw4.mongodb.net/edustation?retryWrites=true&w=majority"
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+# Cloudinary
+CLOUDINARY_CLOUD_NAME="dwgr4byba"
+CLOUDINARY_API_KEY="961624555633322"
+CLOUDINARY_API_SECRET="R-Ts0cwxKVIQzBEJwcpVa2f4rNs"
+
+# Gemini AI API key (server-side only)
+GEMINI_API_KEY="AIzaSyA8PGJZKIKEx0yV3MBh8eCoyrJwfC8LpoY"
+
+# Optional auth debug/trust settings
+AUTH_DEBUG=false
+AUTH_TRUST_HOST=true
+
+# Environment
+NODE_ENV="development"
