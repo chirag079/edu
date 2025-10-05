@@ -1,10 +1,10 @@
 "use server";
 
-import { connectToDb } from "../lib/db";
-import { Message, Conversation } from "../lib/models/message.schema";
-import { Listing } from "../lib/models/listing.schema";
-import { User } from "../lib/models/user.schema";
-import { auth } from "../auth";
+import { connectToDb } from "@/lib/db";
+import { Message, Conversation } from "@/lib/models/message.schema";
+import { Listing } from "@/lib/models/listing.schema";
+import { User } from "@/lib/models/user.schema";
+import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import mongoose from "mongoose";
 

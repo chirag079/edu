@@ -1,0 +1,949 @@
+openapi: 3.1.0
+info:
+  title: EduStation API
+  version: 1.0.0
+  description: Documentation for EduStation backend APIs
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local server
+
+paths:
+  /admin/{username}:
+    get:
+      summary: Get users by username
+      description: Fetches users whose username matches the given string. Only returns users with role `Buyer` or `Seller`.
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: Partial or full username to search for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Users fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User Fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  statusCode:
+                    type: integer
+                    example: 200
+        '400':
+          description: Invalid username provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /advertisements:
+    get:
+      summary: Get advertisements
+      description: Fetches advertisements. Admins see all; normal users see only their own.
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "pending"
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "event"
+      responses:
+        '200':
+          description: List of advertisements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Advertisement'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Create advertisement
+      description: Creates a new advertisement. User must be logged in and have sufficient wallet balance.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: "event"
+                entityId:
+                  type: string
+                  example: "64fa123abc456def78901234"
+                duration:
+                  type: object
+                  properties:
+                    startDate:
+                      type: string
+                      format: date
+                      example: "2025-10-01"
+                    endDate:
+                      type: string
+                      format: date
+                      example: "2025-10-10"
+      responses:
+        '201':
+          description: Advertisement created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Advertisement'
+        '400':
+          description: Insufficient balance or invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    patch:
+      summary: Update advertisement status
+      description: Only admin can update the status of an advertisement.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: "64fa123abc456def78901234"
+                status:
+                  type: string
+                  example: "approved"
+                adminNotes:
+                  type: string
+                  example: "Approved for the upcoming semester"
+                rejectionReason:
+                  type: string
+                  example: "Insufficient information"
+      responses:
+        '200':
+          description: Advertisement updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Advertisement'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Advertisement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/{provider}:
+    get:
+      summary: Sign in via provider
+      description: Initiates OAuth sign-in with the specified provider (e.g., Google, GitHub).
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          description: OAuth provider name
+          schema:
+            type: string
+            example: google
+      responses:
+        '302':
+          description: Redirects to the OAuth provider
+        '400':
+          description: Invalid provider
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Callback endpoint for provider
+      description: Handles the OAuth callback and completes sign-in.
+      responses:
+        '200':
+          description: Successfully signed in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  expires:
+                    type: string
+                    format: date-time
+        '401':
+          description: Unauthorized / sign-in failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /chat:
+    get:
+      summary: Get chats
+      description: Fetch chats related to logged-in user, optionally filtered by entity.
+      parameters:
+        - name: entityId
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "64fa123abc456def78901234"
+        - name: entityType
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "event"
+      responses:
+        '200':
+          description: List of chats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Chat'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Send a chat message
+      description: Sends a message in an existing or new chat.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                receiverId:
+                  type: string
+                  example: "64fa123abc456def78901234"
+                entityId:
+                  type: string
+                  example: "64fa123abc456def78901234"
+                entityType:
+                  type: string
+                  example: "event"
+                content:
+                  type: string
+                  example: "Hello! Is this still available?"
+      responses:
+        '201':
+          description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    patch:
+      summary: Mark chat message as read
+      description: Marks a specific message in a chat as read.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chatId:
+                  type: string
+                  example: "64fa123abc456def78901234"
+                messageId:
+                  type: string
+                  example: "64fa123abc456def78901234"
+      responses:
+        '200':
+          description: Chat updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Chat not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /docs:
+    get:
+      summary: Get API documentation
+      description: Returns the OpenAPI YAML specification in JSON format for Swagger UI.
+      responses:
+        '200':
+          description: Successfully retrieved API documentation
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  openapi: "3.1.0"
+                  info:
+                    title: "EduStation API"
+                    version: "1.0.0"
+                  paths: {}
+        '500':
+          description: Failed to load documentation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /events/{id}:
+    get:
+      summary: Get event by ID
+      description: Fetches a single event by its ID. Only approved events are publicly visible; non-approved events are visible to the admin or the creator.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Event ID to fetch
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Invalid event ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Event not available for current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /register/{requestType}:
+    post:
+      summary: User registration or login
+      description: Handles user signup or login depending on the `requestType` path parameter.
+      parameters:
+        - name: requestType
+          in: path
+          required: true
+          description: Type of request, either `signup` or `login`
+          schema:
+            type: string
+            enum: [signup, login]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  description: Signup payload
+                  properties:
+                    name:
+                      type: string
+                      example: "John Doe"
+                    username:
+                      type: string
+                      example: "john_doe"
+                    password:
+                      type: string
+                      example: "password123"
+                    email:
+                      type: string
+                      example: "john@example.com"
+                    role:
+                      type: string
+                      example: "explorer"
+                - type: object
+                  description: Login payload
+                  properties:
+                    username:
+                      type: string
+                      example: "john_doe"
+                    password:
+                      type: string
+                      example: "password123"
+      responses:
+        '200':
+          description: Successful login or signup
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Successfully Logged in"
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      redirect:
+                        type: string
+                        example: "/dashboard"
+        '400':
+          description: Validation error or invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Username or email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+   /restaurants:
+    get:
+      summary: Get restaurants
+      description: Fetches restaurants filtered by college, cuisine, price range, and rating.
+      parameters:
+        - name: collegeId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: cuisine
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: priceRange
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: rating
+          in: query
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: List of restaurants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Restaurant'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Create a restaurant
+      description: Creates a new restaurant. User must be logged in.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Cafe Mocha"
+                cuisine:
+                  type: string
+                  example: "Italian"
+                priceRange:
+                  type: string
+                  example: "$$"
+                rating:
+                  type: number
+                  example: 4.5
+                college:
+                  type: string
+                  example: "NSUT"
+                address:
+                  type: string
+                  example: "123 Street, Delhi"
+      responses:
+        '201':
+          description: Restaurant created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Restaurant'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /restaurants/{id}:
+    get:
+      summary: Get restaurant by ID
+      description: Fetches a single restaurant by its ID. Admins or creators can see non-approved restaurants.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Restaurant fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Restaurant'
+        '400':
+          description: Invalid restaurant ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Restaurant not available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Restaurant not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64f9b7a6c9a1b2e5f8d7c123"
+        name:
+          type: string
+          example: "John Doe"
+        username:
+          type: string
+          example: "john_doe"
+        email:
+          type: string
+          example: "john@example.com"
+        role:
+          type: string
+          example: "explorer"
+        college:
+          type: string
+          example: "NSUT"
+        profileStatus:
+          type: string
+          example: "verified"
+        isVerified:
+          type: boolean
+          example: true
+        phone:
+          type: string
+          example: "9876543210"
+        address:
+          type: string
+          example: "123 Street"
+        city:
+          type: string
+          example: "Delhi"
+        state:
+          type: string
+          example: "Delhi"
+        country:
+          type: string
+          example: "India"
+        bio:
+          type: string
+          example: "A passionate student"
+        hasProfilePicture:
+          type: boolean
+          example: true
+        wallet:
+          type: object
+          properties:
+            balance:
+              type: number
+              example: 500
+            transactions:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "advertisement"
+                  amount:
+                    type: number
+                    example: 100
+                  description:
+                    type: string
+                    example: "Advertisement for event"
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2025-10-05T12:00:00.000Z"
+        savedItems:
+          type: array
+          items:
+            type: string
+            example: "64fa123abc456def78901234"
+
+    Advertisement:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64fa123abc456def78901234"
+        type:
+          type: string
+          example: "event"
+        entityId:
+          type: string
+          example: "64fa123abc456def78901234"
+        advertiser:
+          $ref: '#/components/schemas/User'
+        status:
+          type: string
+          example: "pending"
+        payment:
+          type: object
+          properties:
+            amount:
+              type: number
+              example: 100
+            currency:
+              type: string
+              example: "INR"
+            status:
+              type: string
+              example: "pending"
+            transactionId:
+              type: string
+              example: "txn_123456"
+        duration:
+          type: object
+          properties:
+            startDate:
+              type: string
+              format: date
+              example: "2025-10-01"
+            endDate:
+              type: string
+              format: date
+              example: "2025-10-10"
+        adminNotes:
+          type: string
+          example: "Approved for promotion"
+        rejectionReason:
+          type: string
+          example: "Missing details"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-10-05T12:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-10-05T12:30:00.000Z"
+
+    Chat:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64fa123abc456def78901234"
+        sender:
+          $ref: '#/components/schemas/User'
+        receiver:
+          $ref: '#/components/schemas/User'
+        entityId:
+          type: string
+          example: "64fa123abc456def78901234"
+        entityType:
+          type: string
+          example: "event"
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                example: "64fa123abc456def78901234"
+              content:
+                type: string
+                example: "Hello! Is this available?"
+              sender:
+                type: string
+                example: "64f9b7a6c9a1b2e5f8d7c123"
+              read:
+                type: boolean
+                example: false
+              createdAt:
+                type: string
+                format: date-time
+                example: "2025-10-05T12:00:00.000Z"
+        lastMessage:
+          type: object
+          properties:
+            content:
+              type: string
+              example: "Hello! Is this available?"
+            sender:
+              type: string
+              example: "64f9b7a6c9a1b2e5f8d7c123"
+            read:
+              type: boolean
+              example: false
+            createdAt:
+              type: string
+              format: date-time
+              example: "2025-10-05T12:00:00.000Z"
+
+    Event:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64fa123abc456def78901234"
+        title:
+          type: string
+          example: "Annual College Fest"
+        description:
+          type: string
+          example: "Join us for a fun-filled day with games, music, and food!"
+        location:
+          type: string
+          example: "NSUT Campus"
+        startDate:
+          type: string
+          format: date-time
+          example: "2025-11-01T10:00:00.000Z"
+        endDate:
+          type: string
+          format: date-time
+          example: "2025-11-01T18:00:00.000Z"
+        status:
+          type: string
+          example: "approved"
+        createdBy:
+          type: object
+          properties:
+            id:
+              type: string
+              example: "64f9b7a6c9a1b2e5f8d7c123"
+            username:
+              type: string
+              example: "john_doe"
+            name:
+              type: string
+              example: "John Doe"
+            email:
+              type: string
+              example: "john@example.com"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-10-05T12:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-10-05T12:30:00.000Z"
+    Restaurant:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64fa123abc456def78901234"
+        name:
+          type: string
+          example: "Cafe Mocha"
+        cuisine:
+          type: string
+          example: "Italian"
+        priceRange:
+          type: string
+          example: "$$"
+        rating:
+          type: number
+          example: 4.5
+        college:
+          type: string
+          example: "NSUT"
+        createdBy:
+          $ref: '#/components/schemas/User'
+        status:
+          type: string
+          example: "approved"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-10-05T12:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-10-05T12:30:00.000Z"
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Insufficient wallet balance"
+        type:
+          type: string
+          example: "ValidationError"
+        statusCode:
+          type: integer
+          example: 400

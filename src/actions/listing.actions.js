@@ -1,11 +1,11 @@
 "use server";
 
-import { connectToDb } from "../lib/db";
-import { Listing } from "../lib/models/listing.schema.js";
-import { User } from "../lib/models/user.schema.js";
+import { connectToDb } from "@/lib/db";
+import { Listing } from "@/lib/models/listing.schema.js";
+import { User } from "@/lib/models/user.schema.js";
 import mongoose from "mongoose";
-import { auth } from "../auth"; // To get current user session
-import { calculateAdvertisingCost } from "../lib/utils/costUtils"; // Import cost calculator
+import { auth } from "@/auth"; // To get current user session
+import { calculateAdvertisingCost } from "@/lib/utils/costUtils"; // Import cost calculator
 import { deductFundsForListing } from "./wallet.actions"; // Import fund deduction
 import { revalidatePath } from "next/cache"; // To potentially refresh admin page
 
@@ -650,7 +650,7 @@ export async function getApprovedEvents(limit = 8, college = null) {
 export async function getApprovedRestaurants(limit = 8, college = null) {
   try {
     await connectToDb();
-    const { Restaurant } = await import("../lib/models/restaurant.schema.js");
+    const { Restaurant } = await import("@/lib/models/restaurant.schema.js");
     const query = { status: "approved" };
     if (college) {
       query.college = college;

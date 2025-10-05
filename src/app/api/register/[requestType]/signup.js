@@ -1,7 +1,7 @@
-import { connecToDb } from "@/lib/connectionToDb";
+import { connecToDb } from "@/lib/connectToDb";
 import { hashPassword } from "@/lib/helper/bcrypt";
 import { User } from "@/lib/models/user.schema";
-import { zodUserSchema } from "@/lib/models/zod.schema";
+import { zodUserSchema } from "@/lib/models/zod .schema";
 import { errorResponse } from "@/lib/utils/error.response";
 import { successResponse } from "@/lib/utils/success.response";
 

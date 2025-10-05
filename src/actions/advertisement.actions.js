@@ -1,7 +1,7 @@
 "use server";
 
-import { connectToDb } from "../lib/db";
-import { Approval } from "../lib/models/approval.schema";
+import { connectToDb } from "@/lib/db";
+import { Approval } from "@/lib/models/approval.schema";
 import mongoose from "mongoose";
 import { deductFundsFromWallet } from "./wallet.actions";
 

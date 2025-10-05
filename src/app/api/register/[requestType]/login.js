@@ -1,8 +1,8 @@
 import { signIn } from "next-auth/react";
-import { connecToDb } from "@/lib/connectionToDb";
+import { connecToDb } from "@/lib/connectToDb";
 import { verifyPassword } from "@/lib/helper/bcrypt";
 import { User } from "@/lib/models/user.schema";
-import { zodLoginSchema } from "@/lib/models/zod.schema";
+import { zodLoginSchema } from "@/lib/models/zod .schema";
 import { errorResponse } from "@/lib/utils/error.response";
 import { successResponse } from "@/lib/utils/success.response";
 import { StatusCodes } from "http-status-codes";

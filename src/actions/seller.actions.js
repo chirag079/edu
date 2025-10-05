@@ -1,10 +1,10 @@
 "use server";
 
-import { Approval } from "../lib/models/approval.schema";
+import { Approval } from "@/lib/models/approval.schema";
 import { revalidatePath } from "next/cache";
 
-const { connecToDb } = require("../lib/connectToDb");
-const { Request } = require("../lib/models/request.schema");
+const { connecToDb } = require("@/lib/connectToDb");
+const { Request } = require("@/lib/models/Request.schema");
 
 export async function fetchRequests(userId) {
   let requests = [];

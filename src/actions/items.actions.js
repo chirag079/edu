@@ -1,10 +1,10 @@
 "use server";
 
-import { auth } from "../auth";
-import { connecToDb } from "../lib/connectToDb";
-import { Approval } from "../lib/models/approval.schema";
-import { Flat } from "../lib/models/flat.schema";
-import { Stationary } from "../lib/models/stationary.schema";
+import { auth } from "@/auth";
+import { connecToDb } from "@/lib/connectToDb";
+import { Approval } from "@/lib/models/approval.schema";
+import { Flat } from "@/lib/models/flat.schema";
+import { Stationary } from "@/lib/models/stationary.schema";
 
 export async function fetchBooks(page, limit, type, searchName) {
   connecToDb();

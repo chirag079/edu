@@ -4,8 +4,9 @@ import { fromZodError } from "zod-validation-error";
 import { signIn } from "@/auth";
 import { connecToDb } from "@/lib/connectToDb";
 
-import { zodUserSchema } from "../lib/models/zod .schema";
-import { CustomError } from "../lib/utils/customError";
+import { User } from "@/lib/models/user.schema";
+import { zodUserSchema } from "@/lib/models/zod .schema";
+import { CustomError } from "@/lib/utils/customError";
 connecToDb();
 export async function LoginAction(formdata) {
   try {

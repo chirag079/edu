@@ -1,7 +1,7 @@
 "use server";
 
-import { connectToDb } from "../lib/db";
-import { User } from "../lib/models/user.schema";
+import { connectToDb } from "@/lib/db";
+import { User } from "@/lib/models/user.schema";
 import mongoose from "mongoose";
 
 export async function getUserWalletBalance(userId) {

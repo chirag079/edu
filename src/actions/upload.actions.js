@@ -1,7 +1,7 @@
 "use server";
 
 import { v2 as cloudinary } from "cloudinary";
-import { auth } from "../auth";
+import { auth } from "@/auth";
 
 // Configure Cloudinary (ensure environment variables are set)
 cloudinary.config({

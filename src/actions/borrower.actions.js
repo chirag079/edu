@@ -1,10 +1,10 @@
 "use server";
-import { Flat } from "../lib/models/flat.schema";
-import { Stationary } from "../lib/models/stationary.schema";
-import { connecToDb } from "../lib/connectToDb";
-import { Request } from "../lib/models/Request.schema";
+import { Flat } from "@/lib/models/flat.schema";
+import { Stationary } from "@/lib/models/stationary.schema";
+import { connecToDb } from "@/lib/connectToDb";
+import { Request } from "@/lib/models/Request.schema";
 
-import { auth } from "../auth";
+import { auth } from "@/auth";
 
 import { successResponse } from "@/lib/utils/success.response";
 import { revalidatePath } from "next/cache";

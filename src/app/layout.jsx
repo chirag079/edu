@@ -2,13 +2,13 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ThemeProvider } from "../components/theme/theme-provider";
-import Navbar from "../components/navbar";
-import Footer from "../components/footer";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
 // import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { Toaster } from "sonner";
-import { Providers } from "../components/providers";
-import { cn } from "../lib/utils";
+import { Providers } from "@/components/providers";
+import { cn } from "@/lib/utils";
 // import { fontSans } from "../lib/fonts";
 
 const inter = Inter({ subsets: ["latin"] });

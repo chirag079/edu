@@ -1,8 +1,8 @@
 "use server";
-import { auth } from "../auth";
-import { connectToDb } from "../lib/db";
-import { User } from "../lib/models/user.schema";
-import { Listing } from "../lib/models/listing.schema";
+import { auth } from "@/auth";
+import { connectToDb } from "@/lib/db";
+import { User } from "@/lib/models/user.schema";
+import { Listing } from "@/lib/models/listing.schema";
 import mongoose from "mongoose";
 import { revalidatePath } from "next/cache";
 

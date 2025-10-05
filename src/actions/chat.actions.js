@@ -1,7 +1,7 @@
 "use server";
 
-import { connectToDb } from "../lib/db";
-import { Message } from "../lib/models/message.schema.js"; // Import the Message model
+import { connectToDb } from "@/lib/db";
+import { Message } from "@/lib/models/message.schema.js"; // Import the Message model
 import mongoose from "mongoose";
 
 // STUB Implementation - Replace with actual DB/Chat service logic

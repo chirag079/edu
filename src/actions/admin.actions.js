@@ -1,10 +1,10 @@
 "use server";
-import { connectToDb } from "../lib/db";
-import { Approval } from "../lib/models/approval.schema";
-import { User } from "../lib/models/user.schema";
+import { connectToDb } from "@/lib/db";
+import { Approval } from "@/lib/models/approval.schema";
+import { User } from "@/lib/models/user.schema";
 import { updateItem } from "./items.actions";
 import { revalidatePath } from "next/cache";
-import { Listing } from "../lib/models/listing.schema.js";
+import { Listing } from "@/lib/models/listing.schema.js";
 import mongoose from "mongoose";
 import { addFundsToWallet } from "./wallet.actions"; // Import wallet action
 

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import MobileHamburger from "./MobileHamburger";
-import { Button } from "../components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
   User,
@@ -27,7 +27,7 @@ import {
   ShieldCheck,
   Info,
 } from "lucide-react";
-import { Badge } from "../components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,9 +35,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { ModeToggle } from "../components/mode-toggle";
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
