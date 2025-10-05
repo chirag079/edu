@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# EduStation - Next.js Project
 
-## Getting Started
+You can access the API documentation at the `/docs` route on the root URL:
 
-First, run the development server:
+
+## Local Development Setup
+
+Clone the repository:
+
+```bash
+git clone https://github.com/chirag079/edu.git
+cd edu
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Create a .env file in the root and add the following:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```bash
+# Authentication URL
+AUTH_URL="http://localhost:3000/api/auth"
 
-## Learn More
+# MongoDB connection
+MONGODB_URI="mongodb+srv://jainarihantaj007:wNgY5Acr5TB58ndq@cluster69.qeyw4.mongodb.net/edustation?retryWrites=true&w=majority"
 
-To learn more about Next.js, take a look at the following resources:
+# Cloudinary configuration
+CLOUDINARY_CLOUD_NAME="dwgr4byba"
+CLOUDINARY_API_KEY="961624555633322"
+CLOUDINARY_API_SECRET="R-Ts0cwxKVIQzBEJwcpVa2f4rNs"
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# NextAuth configuration
+NEXTAUTH_SECRET="fhue3243h2urhew"
+NEXTAUTH_URL="http://localhost:3000"
+AUTH_DEBUG=false
+AUTH_TRUST_HOST=true
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+# Gemini API
+GEMINI_API_KEY="AIzaSyBe3gy7Y9X6ZU1UJHXbf9TG2v-PJrtW1kQ"
+```
