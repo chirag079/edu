@@ -251,6 +251,8 @@ paths:
   /chat:
     get:
       summary: Get chats
+      tags:
+        - Chat
       description: Fetch chats related to logged-in user, optionally filtered by entity.
       parameters:
         - name: entityId
@@ -289,6 +291,8 @@ paths:
 
     post:
       summary: Send a chat message
+      tags:
+        - Chat
       description: Sends a message in an existing or new chat.
       requestBody:
         required: true
@@ -331,6 +335,8 @@ paths:
 
     patch:
       summary: Mark chat message as read
+      tags:
+        - Chat
       description: Marks a specific message in a chat as read.
       requestBody:
         required: true
@@ -374,6 +380,8 @@ paths:
   /docs:
     get:
       summary: Get API documentation
+      tags:
+        - Docs
       description: Returns the OpenAPI YAML specification in JSON format for Swagger UI.
       responses:
         '200':
@@ -398,6 +406,8 @@ paths:
   /events/{id}:
     get:
       summary: Get event by ID
+      tags:
+        - Events
       description: Fetches a single event by its ID. Only approved events are publicly visible; non-approved events are visible to the admin or the creator.
       parameters:
         - name: id
@@ -437,9 +447,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+
   /register/{requestType}:
     post:
       summary: User registration or login
+      tags:
+        - Register
       description: Handles user signup or login depending on the `requestType` path parameter.
       parameters:
         - name: requestType
@@ -528,9 +541,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-   /restaurants:
+
+  /restaurants:
     get:
       summary: Get restaurants
+      tags:
+        - Restaurant
       description: Fetches restaurants filtered by college, cuisine, price range, and rating.
       parameters:
         - name: collegeId
@@ -571,6 +587,8 @@ paths:
 
     post:
       summary: Create a restaurant
+      tags:
+        - Restaurant
       description: Creates a new restaurant. User must be logged in.
       requestBody:
         required: true
@@ -620,6 +638,8 @@ paths:
   /restaurants/{id}:
     get:
       summary: Get restaurant by ID
+      tags:
+        - Restaurant
       description: Fetches a single restaurant by its ID. Admins or creators can see non-approved restaurants.
       parameters:
         - name: id
@@ -658,6 +678,259 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /Seller:
+    post:
+      summary: Create a product (Flat or Stationary)
+      tags:
+        - Seller
+      description: Allows a logged-in Seller to create a product listing with image upload. Image is uploaded to Cloudinary, and admin approval is initiated.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                model:
+                  type: string
+                  description: "Product model: Flat or Stationary"
+                  example: "Flat"
+                name:
+                  type: string
+                  example: "2BHK Flat"
+                price:
+                  type: number
+                  example: 12000
+                capacity:
+                  type: number
+                  example: 4
+                tags:
+                  type: string
+                  example: "furnished,near-college"
+                image:
+                  type: string
+                  format: binary
+                  description: "Image file of the product"
+      responses:
+        '202':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Successfully Created"
+                  data:
+                    type: string
+                    example: "Created"
+                  statusCode:
+                    type: integer
+                    example: 202
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /Seller/{fetchItem}:
+    get:
+      summary: Fetch a requested item
+      tags:
+        - Seller
+      description: Fetches details of a requested item (Flat or Stationary) by its model.
+      parameters:
+        - name: fetchItem
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "Flat"
+      responses:
+        '200':
+          description: Item fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Found Successfully"
+                  data:
+                    type: object
+                    description: "Item details"
+                  statusCode:
+                    type: integer
+                    example: 200
+        '400':
+          description: Bad request / error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /user/complete-profile:
+    post:
+      summary: "Complete user profile after registration"
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                country:
+                  type: string
+                college:
+                  type: string
+                bio:
+                  type: string
+                profilePicture:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: "Profile updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile updated successfully"
+        '401':
+          description: "Unauthorized"
+        '404':
+          description: "User not found"
+        '500':
+          description: "Failed to update profile"
+    /user/update-profile:
+    put:
+      summary: "Update user profile"
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mobileNumber:
+                  type: string
+                address:
+                  type: string
+                college:
+                  type: string
+      responses:
+        '202':
+          description: "Profile successfully updated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Succesfully Updated"
+        '409':
+          description: "Mobile number already in use"
+        '500':
+          description: "Server error"
+
+    get:
+      summary: "Check if registration is completed"
+      tags:
+        - User
+      responses:
+        '200':
+          description: "Registration status"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+        '500':
+          description: "Server error"
+
+  /wallet:
+    get:
+      summary: "Get current user's wallet details"
+      tags:
+        - Wallet
+      responses:
+        '200':
+          description: "Wallet details"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wallet"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "Failed to fetch wallet"
+
+    post:
+      summary: "Recharge user's wallet"
+      tags:
+        - Wallet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  example: 500
+                transactionId:
+                  type: string
+                  example: "TXN123456789"
+      responses:
+        '200':
+          description: "Updated wallet details after recharge"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wallet"
+        '400':
+          description: "Invalid amount"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "Failed to recharge wallet"
+
+
 
 components:
   schemas:
@@ -900,6 +1173,7 @@ components:
           type: string
           format: date-time
           example: "2025-10-05T12:30:00.000Z"
+
     Restaurant:
       type: object
       properties:
@@ -934,6 +1208,86 @@ components:
           type: string
           format: date-time
           example: "2025-10-05T12:30:00.000Z"
+
+    UserProfile:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "chirag123"
+        name:
+          type: string
+          example: "Chirag Agrawal"
+        email:
+          type: string
+          example: "chirag@example.com"
+        mobile:
+          type: string
+          example: "9876543210"
+        address:
+          type: string
+          example: "123 Main Street"
+        city:
+          type: string
+          example: "Delhi"
+        state:
+          type: string
+          example: "Delhi"
+        country:
+          type: string
+          example: "India"
+        college:
+          type: string
+          example: "NSUT"
+        bio:
+          type: string
+          example: "Aspiring software engineer"
+        profilePicture:
+          type: string
+          format: uri
+          example: "https://res.cloudinary.com/.../profile.jpg"
+        isVerified:
+          type: boolean
+          example: true
+        registrationCompleted:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-10-05T12:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-10-05T12:30:00.000Z"
+    
+    WalletTransaction:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [credit, debit]
+          example: credit
+        amount:
+          type: number
+          example: 500
+        description:
+          type: string
+          example: "Wallet recharge"
+        transactionId:
+          type: string
+          example: "TXN123456789"
+    Wallet:
+      type: object
+      properties:
+        balance:
+          type: number
+          example: 1500
+        transactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/WalletTransaction"
+
 
     ErrorResponse:
       type: object

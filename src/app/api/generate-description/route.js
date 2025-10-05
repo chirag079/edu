@@ -23,7 +23,7 @@ export async function POST(request) {
 
     // Get the model - trying gemini-1.5-flash-latest
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash-latest",
+      model: "gemini-2.5-flash",
     });
 
     const prompt = generatePrompt(itemType, title);
