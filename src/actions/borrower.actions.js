@@ -2,7 +2,7 @@
 import { Flat } from "@/lib/models/flat.schema";
 import { Stationary } from "@/lib/models/stationary.schema";
 import { connecToDb } from "@/lib/connectToDb";
-import { Request } from "@/lib/models/Request.schema";
+import { Request } from "@/lib/models/request.schema";
 
 import { auth } from "@/auth";
 

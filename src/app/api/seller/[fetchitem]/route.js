@@ -1,5 +1,5 @@
 import { connecToDb } from "@/lib/connectToDb";
-import { Request } from "@/lib/models/Request.schema";
+import { Request } from "@/lib/models/request.schema";
 import { errorResponse } from "@/lib/utils/error.response";
 import { successResponse } from "@/lib/utils/success.response";
 import { StatusCodes } from "http-status-codes";
