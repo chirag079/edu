@@ -2,6 +2,11 @@
 
 You can access the API documentation at the `/docs` route on the root URL:
 
+# Admin Credentials
+Username: admin123
+Password: admin123
+
+
 
 ## Local Development Setup
 
